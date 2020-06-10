@@ -6,9 +6,9 @@ LOG_LOCATION=/root/
 exec > >(tee -i $LOG_LOCATION/cnode.log)
 exec 2>&1
 read -p "What is your ssh port (use 22 if you do not know)?: " portno
-read -p "What is your username?: " username
+read -p "What is your username?: e.g. coti " username
 read -p "What is your email address?: " email
-read -p "What is your server name?: " servername
+read -p "What is your server name?: e.g. coti.geordier.co.uk " servername
 read -p "What is your wallet private key?: " pkey
 read -p "What is your wallet seed?: " seed
 
@@ -24,9 +24,7 @@ serverurl=https://$servername
 adduser --gecos "" --disabled-password $username
 adduser $username sudo
 usermod -aG sudo $username
-mkdir /home/$username/.ssh
-cp -rf /root/.ssh/* /home/$username/.ssh/
-chown -R $username:$username /home/$username/.ssh
+
 
 
 
@@ -135,7 +133,7 @@ cat <<EOF >/etc/systemd/system/cnode.service
 Description=COTI Fullnode Service
 [Service]
 WorkingDirectory=/home/$username/coti-fullnode/
-ExecStart=/usr/bin/java -Xmx256m -jar home/$username/coti-fullnode/fullnode/target/fullnode-1.2.0.RELEASE.jar --spring.config.additional-location=fullnode1.properties
+ExecStart=/usr/bin/java -Xmx256m -jar /home/$username/coti-fullnode/fullnode/target/fullnode-1.2.0.RELEASE.jar --spring.config.additional-location=fullnode1.properties
 SuccessExitStatus=143
 User=$username
 Restart=on-failure
